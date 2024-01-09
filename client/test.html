@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<div id="canvas"></div>
+		<script defer>
+			class Canvas {
+				constructor(height, width, id) {
+					this.canvasHeight = height;
+					this.canvasWidth = width;
+					const canvasCon = document.getElementById(id);
+					console.log(canvasCon);
+					const canvas = document.createElement("canvas");
+					canvas.width = width;
+					canvas.height = height;
+
+					canvasCon.appendChild(canvas);
+					this.context = canvas.getContext("2d");
+				}
+				getContext() {
+					return this.context;
+				}
+
+				background(r, g, b) {
+					this.fill(r, g, b);
+					this.stroke(r, g, b);
+					this.rect(0, 0, this.canvasWidth, this.canvasHeight);
+				}
+
+				rect(x, y, width, height) {
+					const context = this.getContext();
+					context.fillRect(x, y, width, height);
+					context.strokeRect(x, y, width, height);
+				}
+
+				stroke(r, g, b) {
+					const context = this.getContext();
+					context.strokeStyle = `rgb(${r}, ${g}, ${b})`;
+				}
+
+				fill(r, g, b) {
+					const context = this.getContext();
+					context.fillStyle = `rgb(${r}, ${g}, ${b})`;
+				}
+			}
+			const canvas = new Canvas(500, 500, "canvas");
+
+			canvas.background(0, 0, 0);
+			canvas.stroke(0, 100, 100);
+			canvas.fill(255, 100, 100);
+
+			canvas.rect(0, 0, 100, 100);
+		</script>
+	</body>
+</html>
