@@ -5,11 +5,11 @@ import { PopoverPicker } from "./components/colorpickers/PopoverPicker/PopoverPi
 const socket = io.connect("http://localhost:3100");
 function App() {
 	const msgRef = useRef();
-	const [testState, setTestState] = useState();
+	const [callRender, setCallRender] = useState();
 	useEffect(() => {
 		socket.on("receieve_message", (data) => {
 			msgRef.current = data;
-			setTestState(msgRef.current);
+			setCallRender(msgRef.current);
 		});
 	}, [socket]);
 
