@@ -47,7 +47,6 @@ const Canvas = (props) => {
 		if (!canvasUtilRef.current || !connData) return;
 		const { px, py, x, y, stroke, colorInfo } = connData;
 		const { backgroundColor, strokeColor } = colorInfo;
-		setStrokeColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
 		setStrokeColor(strokeColor.r, strokeColor.g, strokeColor.b);
 		drawLine(px, py, x, y, stroke);
 	}, [connData]);
