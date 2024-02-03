@@ -1,71 +1,58 @@
 import React, { useRef, useEffect } from "react";
-import { CanvasUtil } from "./util/CanvasUtil";
 
 const Canvas = (props) => {
-	const { canvasHeight, canvasWidth, onUpdate, connData } = props;
+	const { canvasHeight, canvasWidth, onUpdate, connData, backgroundColor, strokeColor } = props;
 	const canvasRef = useRef(null);
-	const canvasInstance = useRef();
-	const prevMouseRef = useRef();
-	const mouseStateRef = useRef({ mouseUp: true, mouseDown: false });
+	const canvasUtilRef = useRef(null);
 
 	useEffect(() => {
-		if (!canvasInstance.current || !connData) return;
-		const { px, py, x, y, stroke } = connData;
-		canvasInstance.current.stroke(100, 100, 100);
-		canvasInstance.current.line(px, py, x, y, stroke);
+		if (canvasUtilRef.current) return;
+		canvasUtilRef.current = window.CanvasUtil.getCanvasInstance(canvasRef.current);
+		setBackGround(backgroundColor.r, backgroundColor.g, backgroundColor.b);
+		canvasUtilRef.current.onMouseMove((e) => {
+			const { up } = e;
+			if (!up) onMouseDown(e);
+		});
+	});
+
+	function onMouseDown(e) {
+		const { px, py, x, y } = e;
+		const stroke = 10;
+		setStrokeColor(strokeColor.r, strokeColor.g, strokeColor.b);
+		drawLine(px, py, x, y, stroke);
+		const colorInfo = {
+			strokeColor,
+			backgroundColor,
+		};
+		onUpdate({ px, py, x, y, stroke, colorInfo });
+	}
+
+	function setStrokeColor(r, g, b) {
+		if (!canvasUtilRef.current) return;
+		canvasUtilRef.current.stroke(r, g, b);
+	}
+
+	function setBackGround(r, g, b, a = 1) {
+		if (!canvasUtilRef.current) return;
+		canvasUtilRef.current.background(r, g, b, a);
+	}
+
+	function drawLine(x1, y1, x2, y2, stroke = 2) {
+		if (!canvasUtilRef.current) return;
+		canvasUtilRef.current.line(x1, y1, x2, y2, stroke);
+	}
+
+	// receiving data
+	useEffect(() => {
+		if (!canvasUtilRef.current || !connData) return;
+		const { px, py, x, y, stroke, colorInfo } = connData;
+		const { backgroundColor, strokeColor } = colorInfo;
+		setStrokeColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
+		setStrokeColor(strokeColor.r, strokeColor.g, strokeColor.b);
+		drawLine(px, py, x, y, stroke);
 	}, [connData]);
 
-	useEffect(() => {
-		if (!canvasRef.current) return;
-		console.log("dd");
-		canvasInstance.current = new CanvasUtil(canvasRef.current);
-		canvasInstance.current.background(100, 100, 100, 0.6);
-	}, [canvasRef]);
-
-	function mouseMoveHandler(e) {
-		if (mouseStateRef.current.mouseDown) drawLine(e);
-	}
-
-	function drawLine(e) {
-		const { clientX, clientY } = e;
-		if (!prevMouseRef.current)
-			prevMouseRef.current = { prevX: clientX, prevY: clientY };
-
-		const { prevX, prevY } = prevMouseRef.current;
-		const canvasRect = canvasRef.current.getBoundingClientRect();
-		const x = clientX - canvasRect.left;
-		const y = clientY - canvasRect.top;
-
-		const px = prevX - canvasRect.left;
-		const py = prevY - canvasRect.top;
-		const stroke = 8;
-		canvasInstance.current.stroke(100, 100, 100);
-		onUpdate({ px, py, x, y, stroke });
-		canvasInstance.current.line(px, py, x, y, stroke);
-
-		prevMouseRef.current = { prevX: clientX, prevY: clientY };
-	}
-
-	function mouseDownHandler(e) {
-		mouseStateRef.current.mouseDown = true;
-		mouseStateRef.current.mouseUp = false;
-	}
-	function mouseUpHandler(e) {
-		prevMouseRef.current = null;
-		mouseStateRef.current.mouseDown = false;
-		mouseStateRef.current.mouseUp = true;
-	}
-	return (
-		<canvas
-			onMouseMove={mouseMoveHandler}
-			onMouseDown={mouseDownHandler}
-			onMouseUp={mouseUpHandler}
-			height={canvasHeight}
-			width={canvasWidth}
-			ref={canvasRef}
-			{...props}
-		/>
-	);
+	return <canvas height={canvasHeight} width={canvasWidth} ref={canvasRef} {...props} />;
 };
 
 export default Canvas;

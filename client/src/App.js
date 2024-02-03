@@ -42,22 +42,11 @@ function App() {
 	return (
 		<div>
 			<input ref={inpRef} placeholder="Message"></input>
-			<button
-				onClick={() => sendMessage(inpRef.current.value, roomRef.current.value)}
-			>
-				SEND MESAGE
-			</button>
+			<button onClick={() => sendMessage(inpRef.current.value, roomRef.current.value)}>SEND MESAGE</button>
 
 			<input ref={roomRef} placeholder="input room"></input>
-			<button onClick={() => joinRoom(roomRef.current.value)}>
-				connect to room
-			</button>
-			<Canvas
-				connData={msgRef.current}
-				onUpdate={onUpdate}
-				canvasHeight={500}
-				canvasWidth={500}
-			/>
+			<button onClick={() => joinRoom(roomRef.current.value)}>connect to room</button>
+			<Canvas backgroundColor={{ r: 100, g: 200, b: 300 }} strokeColor={{ r: 100, g: 100, b: 100 }} connData={msgRef.current} onUpdate={onUpdate} canvasHeight={500} canvasWidth={500} />
 		</div>
 	);
 }
