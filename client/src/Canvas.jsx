@@ -1,14 +1,14 @@
 import React, { useRef, useEffect } from "react";
 
 const Canvas = (props) => {
-	const { canvasHeight, canvasWidth, onUpdate, connData, backgroundColor, strokeColor } = props;
+	const { canvasheight, canvaswidth, onupdate = () => {}, conndata, backgroundcolor = {}, strokecolor = {} } = props;
 	const canvasRef = useRef(null);
 	const canvasUtilRef = useRef(null);
 
 	useEffect(() => {
 		if (canvasUtilRef.current) return;
 		canvasUtilRef.current = window.CanvasUtil.getCanvasInstance(canvasRef.current);
-		setBackGround(backgroundColor.r, backgroundColor.g, backgroundColor.b);
+		setBackGround(backgroundcolor.r, backgroundcolor.g, backgroundcolor.b);
 		canvasUtilRef.current.onMouseMove((e) => {
 			const { up } = e;
 			if (!up) onMouseDown(e);
@@ -18,13 +18,13 @@ const Canvas = (props) => {
 	function onMouseDown(e) {
 		const { px, py, x, y } = e;
 		const stroke = 10;
-		setStrokeColor(strokeColor.r, strokeColor.g, strokeColor.b);
+		setStrokeColor(strokecolor.r, strokecolor.g, strokecolor.b);
 		drawLine(px, py, x, y, stroke);
 		const colorInfo = {
-			strokeColor,
-			backgroundColor,
+			strokeColor: strokecolor,
+			backgroundColor: backgroundcolor,
 		};
-		onUpdate({ px, py, x, y, stroke, colorInfo });
+		onupdate({ px, py, x, y, stroke, colorInfo });
 	}
 
 	function setStrokeColor(r, g, b) {
@@ -44,14 +44,14 @@ const Canvas = (props) => {
 
 	// receiving data
 	useEffect(() => {
-		if (!canvasUtilRef.current || !connData) return;
-		const { px, py, x, y, stroke, colorInfo } = connData;
+		if (!canvasUtilRef.current || !conndata) return;
+		const { px, py, x, y, stroke, colorInfo } = conndata;
 		const { backgroundColor, strokeColor } = colorInfo;
 		setStrokeColor(strokeColor.r, strokeColor.g, strokeColor.b);
 		drawLine(px, py, x, y, stroke);
-	}, [connData]);
+	}, [conndata]);
 
-	return <canvas height={canvasHeight} width={canvasWidth} ref={canvasRef} {...props} />;
+	return <canvas height={canvasheight} width={canvaswidth} ref={canvasRef} {...props} />;
 };
 
 export default Canvas;

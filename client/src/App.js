@@ -46,7 +46,7 @@ function App() {
 
 			<input ref={roomRef} placeholder="input room"></input>
 			<button onClick={() => joinRoom(roomRef.current.value)}>connect to room</button>
-			<Canvas backgroundColor={{ r: 100, g: 200, b: 300 }} strokeColor={{ r: 100, g: 100, b: 100 }} connData={msgRef.current} onUpdate={onUpdate} canvasHeight={500} canvasWidth={500} />
+			<Canvas backgroundcolor={{ r: 100, g: 200, b: 300 }} strokecolor={{ r: 100, g: 100, b: 100 }} conndata={msgRef.current} onupdate={onUpdate} canvasheight={500} canvaswidth={500} />
 		</div>
 	);
 }
