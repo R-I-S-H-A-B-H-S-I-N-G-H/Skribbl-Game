@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import Canvas from "./Canvas";
+import { PopoverPicker } from "./components/colorpickers/PopoverPicker/PopoverPicker";
 const socket = io.connect("http://localhost:3100");
 function App() {
 	const msgRef = useRef();
@@ -25,6 +26,12 @@ function App() {
 
 	const inpRef = useRef();
 	const roomRef = useRef();
+	const [strokeColor, setstrokeColor] = useState({
+		r: 195,
+		g: 15,
+		b: 175,
+		a: 1,
+	});
 
 	function sendMessage(data, room) {
 		socket.emit("send_message", data, room);
@@ -46,7 +53,9 @@ function App() {
 
 			<input ref={roomRef} placeholder="input room"></input>
 			<button onClick={() => joinRoom(roomRef.current.value)}>connect to room</button>
-			<Canvas backgroundcolor={{ r: 100, g: 200, b: 300 }} strokecolor={{ r: 100, g: 100, b: 100 }} conndata={msgRef.current} onupdate={onUpdate} canvasheight={500} canvaswidth={500} />
+			<Canvas backgroundcolor={{ r: 100, g: 200, b: 300 }} strokecolor={{ ...strokeColor }} conndata={msgRef.current} onupdate={onUpdate} canvasheight={500} canvaswidth={500} />
+
+			<PopoverPicker color={strokeColor} onChange={setstrokeColor} />
 		</div>
 	);
 }

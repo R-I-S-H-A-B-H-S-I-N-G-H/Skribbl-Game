@@ -4,18 +4,18 @@ const Canvas = (props) => {
 	const { canvasheight, canvaswidth, onupdate = () => {}, conndata, backgroundcolor = {}, strokecolor = {} } = props;
 	const canvasRef = useRef(null);
 	const canvasUtilRef = useRef(null);
+	const mouseState = useRef({});
 
 	useEffect(() => {
 		if (canvasUtilRef.current) return;
 		canvasUtilRef.current = window.CanvasUtil.getCanvasInstance(canvasRef.current);
 		setBackGround(backgroundcolor.r, backgroundcolor.g, backgroundcolor.b);
 		canvasUtilRef.current.onMouseMove((e) => {
-			const { up } = e;
-			if (!up) onMouseDown(e);
+			mouseState.current = e;
 		});
 	});
 
-	function onMouseDown(e) {
+	const onMouseDown = (e) => {
 		const { px, py, x, y } = e;
 		const stroke = 10;
 		setStrokeColor(strokecolor.r, strokecolor.g, strokecolor.b);
@@ -25,7 +25,7 @@ const Canvas = (props) => {
 			backgroundColor: backgroundcolor,
 		};
 		onupdate({ px, py, x, y, stroke, colorInfo });
-	}
+	};
 
 	function setStrokeColor(r, g, b) {
 		if (!canvasUtilRef.current) return;
@@ -51,7 +51,11 @@ const Canvas = (props) => {
 		drawLine(px, py, x, y, stroke);
 	}, [conndata]);
 
-	return <canvas height={canvasheight} width={canvaswidth} ref={canvasRef} {...props} />;
+	function onMouseMove() {
+		const { up } = mouseState.current;
+		if (!up) onMouseDown(mouseState.current);
+	}
+	return <canvas onMouseMove={onMouseMove} height={canvasheight} width={canvaswidth} ref={canvasRef} {...props} />;
 };
 
 export default Canvas;
